@@ -1,9 +1,9 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import { COLORS, WEIGHTS } from '../../constants';
-import { formatPrice, pluralize, isNewShoe } from '../../utils';
-import Spacer from '../Spacer';
+import { COLORS, WEIGHTS } from "../../constants";
+import { formatPrice, pluralize, isNewShoe } from "../../utils";
+import Spacer from "../Spacer";
 
 const ShoeCard = ({
   slug,
@@ -36,14 +36,23 @@ const ShoeCard = ({
       <Wrapper>
         <ImageWrapper>
           <Image alt="" src={imageSrc} />
+          {variant === "on-sale" && (
+            <Flag style={{ "--background": "#C5295D" }}>Sale</Flag>
+          )}
+          {variant === "new-release" && (
+            <Flag style={{ "--background": "#6868D9" }}>Just Release!</Flag>
+          )}
         </ImageWrapper>
         <Spacer size={12} />
         <Row>
           <Name>{name}</Name>
-          <Price>{formatPrice(price)}</Price>
+          <Price variant={variant}>{formatPrice(price)}</Price>
         </Row>
         <Row>
-          <ColorInfo>{pluralize('Color', numOfColors)}</ColorInfo>
+          <ColorInfo>{pluralize("Color", numOfColors)}</ColorInfo>
+          {variant === "on-sale" ? (
+            <OnSalePrice>{formatPrice(salePrice)}</OnSalePrice>
+          ) : undefined}
         </Row>
       </Wrapper>
     </Link>
@@ -53,6 +62,7 @@ const ShoeCard = ({
 const Link = styled.a`
   text-decoration: none;
   color: inherit;
+  flex: 1 1 340px;
 `;
 
 const Wrapper = styled.article``;
@@ -61,10 +71,15 @@ const ImageWrapper = styled.div`
   position: relative;
 `;
 
-const Image = styled.img``;
+const Image = styled.img`
+  width: 100%;
+`;
 
 const Row = styled.div`
   font-size: 1rem;
+  display: flex;
+  justify-content: space-between;
+  position: relative;
 `;
 
 const Name = styled.h3`
@@ -72,7 +87,23 @@ const Name = styled.h3`
   color: ${COLORS.gray[900]};
 `;
 
-const Price = styled.span``;
+const Price = styled.span`
+  text-decoration: ${(props) =>
+    props.variant === "on-sale" ? "line-through" : "none"};
+`;
+const OnSalePrice = styled.span`
+  color: #c5295d;
+`;
+
+const Flag = styled.div`
+  padding: 7px 9px;
+  font-size: 14px;
+  position: absolute;
+  top: 12px;
+  right: 0;
+  color: #ffffff;
+  background-color: var(--background);
+`;
 
 const ColorInfo = styled.p`
   color: ${COLORS.gray[700]};
